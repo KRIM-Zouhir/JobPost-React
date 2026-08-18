@@ -1,4 +1,6 @@
 <?php 
+    include_once 'connect.php';
+    // include_once './backend/helpers/cors.php';
     header("Access-Control-Allow-Origin: http://localhost:5173"); // your exact frontend origin, not *
     header("Access-Control-Allow-Credentials: true");
     header("Access-Control-Allow-Headers: Content-Type");
@@ -10,24 +12,48 @@
 
     date_default_timezone_set('Europe/Paris');
     header("Content-Type: application/json");
-    include_once 'connect.php';
 
     $data = json_decode(file_get_contents("php://input"), true);
-    $signup_username = $data['username'] ?? '';
-    $signup_email = filter_var($data['email']  ?? '' , FILTER_VALIDATE_EMAIL) ;
-    $signup_password = $data['password'] ?? '';
+    $action = $data['action'] ?? "";
+    switch($action){
+        case 'signup':
+            $signup_username = $data['username'] ?? '';
+            $signup_email = filter_var($data['email']  ?? '' , FILTER_VALIDATE_EMAIL) ;
+            $signup_password = $data['password'] ?? '';
 
-    if($signup_username && $signup_email && $signup_password){
-        session_start();
-        if(signup($db, $signup_username, $signup_email, $signup_password)){
-            http_response_code(200);
-            echo json_encode(["success" => true, "message" => "Account Created Successfully !"]);
-        }else{
-            http_response_code(400);
-            echo json_encode(["success" => false, "message" => "Singup Failed"]);
+            if($signup_username && $signup_email && $signup_password){
+                session_start();
+                if(signup($db, $signup_username, $signup_email, $signup_password)){
+                    http_response_code(200);
+                    echo json_encode(["success" => true, "message" => "Account Created Successfully !"]);
+                }else{
+                    http_response_code(400);
+                    echo json_encode(["success" => false, "message" => "Singup Failed"]);
 
-        }
+                }
+            }
+            break;
+
+        case 'login' :
+            $login_input = $data['username'] ?? '';
+            $login_password = $data['password'] ?? '';
+
+            if($login_input && $login_password){
+                session_start();
+                if(str_contains($login_input, "@")){
+                    $login_email = $login_input;
+                    $login_username = "";
+                }else{
+                    $login_username = $login_input;
+                    $login_email = "";
+                }
+
+                login($db,$login_username, $login_email, $login_password);
+
+            }
+            break;
     }
+
 
 
     function signup($db, $username, $email, $password){
@@ -56,6 +82,42 @@
         }catch(PDOException $e){
             return false;
 
+        }
+    }
+
+
+    function login($db, $username, $email,  $password){
+        try{
+            $sql = "SELECT * FROM users WHERE username = :username OR email = :email";
+
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(':username' , $username);
+            $stmt->bindValue(':email' , $email);
+            $stmt->execute();
+            $fetch = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if(!empty($fetch)){
+                if($fetch['is_verified'] =! 0){
+                    $fetched_pwd = htmlentities($fetch['password']);
+    
+                    if(password_verify($password , $fetched_pwd)){
+                        $_SESSION['user_id'] = $fetch['id'];
+                        $_SESSION['username'] = $fetch['username'];
+                        $_SESSION['role'] = $fetch['role'];
+                        http_response_code(200);
+                        echo json_encode(["success" => true, "message" => "Login Successed"]);
+
+                    }elseif($fetched_pwd != $password){
+                        http_response_code(400);
+                        echo json_encode(["success" => false, "message" => "Invalid Credentiels"]);                    }
+                }else{
+                    http_response_code(400);
+                    echo json_encode(["success" => false, "message" => "Username/Email Not Found"]);
+                }
+            }
+
+        }catch(PDOException $e){
+            return false;
         }
     }
 ?>
