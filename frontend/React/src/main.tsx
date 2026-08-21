@@ -4,6 +4,7 @@ import './index.css';
 import HomePgae from './pages/main/home';
 import SignUp from './pages/auth/signup';
 import Login from './pages/auth/login';
+import Profile from './pages/main/profile';
 import Layout from './pages/components/layout';
 import { createBrowserRouter, RouterProvider} from "react-router-dom"; 
 
@@ -13,7 +14,8 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <HomePgae />},
       { path: "/signup", element: <SignUp />},
-      { path: "/login", element: <Login />}
+      { path: "/login", element: <Login />},
+      { path: "/profile", element: <Profile />}
     ],
   },
 

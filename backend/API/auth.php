@@ -23,14 +23,7 @@
 
             if($signup_username && $signup_email && $signup_password){
                 session_start();
-                if(signup($db, $signup_username, $signup_email, $signup_password)){
-                    http_response_code(200);
-                    echo json_encode(["success" => true, "message" => "Account Created Successfully !"]);
-                }else{
-                    http_response_code(400);
-                    echo json_encode(["success" => false, "message" => "Singup Failed"]);
-
-                }
+                signup($db, $signup_username, $signup_email, $signup_password);
             }
             break;
 
@@ -51,6 +44,21 @@
                 login($db,$login_username, $login_email, $login_password);
 
             }
+            break;
+
+        
+        case 'profile':
+            session_start();
+            if(!isset($_SESSION['user_id'])){
+                http_response_code(401);
+                echo json_encode([
+                    "success" => false,
+                    "message" => "You are not logged in",
+                ]);
+                break;
+            }
+
+            getuser($db , $_SESSION['user_id']);
             break;
     }
 
@@ -77,11 +85,12 @@
             $stmt->bindValue(':token_time', $token_expires);
             $stmt->execute();
 
-            return true;
+            http_response_code(201);
+            echo json_encode(["success" => true, "message" => "Account Created Successfully !"]);
 
         }catch(PDOException $e){
-            return false;
-
+            http_response_code(400);
+            echo json_encode(["success" => false, "message" => "Singup Failed"]);
         }
     }
 
@@ -97,7 +106,7 @@
             $fetch = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if(!empty($fetch)){
-                if($fetch['is_verified'] =! 0){
+                if($fetch['is_verified'] != 0){
                     $fetched_pwd = htmlentities($fetch['password']);
     
                     if(password_verify($password , $fetched_pwd)){
@@ -108,7 +117,7 @@
                         echo json_encode(["success" => true, "message" => "Login Successed"]);
 
                     }elseif($fetched_pwd != $password){
-                        http_response_code(400);
+                        http_response_code(401);
                         echo json_encode(["success" => false, "message" => "Invalid Credentiels"]);                    }
                 }else{
                     http_response_code(400);
@@ -116,6 +125,37 @@
                 }
             }
 
+        }catch(PDOException $e){
+            return false;
+        }
+    }
+
+    function getuser($db, $id){
+        try{
+            $sql = "SELECT * FROM users WHERE id = :id";
+
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(':id', $id);
+            $stmt->execute();
+            $fetch = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if(!empty($fetch)){
+                $fetched_username = htmlentities($fetch['username']);
+                $fetched_email = htmlentities($fetch['email']);
+                $fetched_role = htmlentities($fetch['role']);
+                http_response_code(200);
+                echo json_encode([  
+                    "success" => true, 
+                    "message" => "User found", 
+                    "user" => [
+                        "username" => $fetched_username,
+                        "email" => $fetched_email,
+                        "role" => $fetched_role
+                ]]);
+            }else{
+                http_response_code(404);
+                echo json_encode(["success" => false, "message" => "No user found with this ID !"]);
+            }
         }catch(PDOException $e){
             return false;
         }

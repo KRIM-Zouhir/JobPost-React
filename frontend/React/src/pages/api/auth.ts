@@ -20,3 +20,14 @@ export async function login(username: string, password: string,) {
 
     return response.json();
 }
+
+export async function profile(){
+    const response = await fetch("http://localhost:8000/auth.php" , {
+        method: "POST",
+        headers: { "Content-Type" : "application/json" },
+        credentials: "include",
+        body: JSON.stringify({action: "profile"})
+    });
+
+    return response.json();
+}
