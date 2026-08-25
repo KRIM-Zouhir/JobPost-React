@@ -21,7 +21,7 @@ function Jobs(){
     const [jobs, setJobs] = useState<Job[]>([]);
 
     useEffect(() => {
-        async function loadJobs() {
+        async function handleLoadJobs() {
             const response = await getjobs(start, rows_per_page); 
     
             if(response.success){
@@ -29,7 +29,7 @@ function Jobs(){
             }
         }
     
-        loadJobs();
+        handleLoadJobs();
     }, [])
 
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { profile } from '../api/auth.ts'
+import { profileapi } from '../api/auth.ts'
 import { Link, useNavigate } from 'react-router-dom';
 
 function Profile(){
@@ -11,14 +11,14 @@ function Profile(){
 
     useEffect(() => {
         async function loadProfile() {
-            const result = await profile();
+            const result = await profileapi();
 
             if(result.success){
                 setUsername(result.user.username);
                 setEmail(result.user.email);
                 setRole(result.user.role);
             }else{
-                redirect("/");
+                redirect("/profile");
             }
         }
 
@@ -37,7 +37,7 @@ function Profile(){
                 <button className='border-white'><Link to="/logout">Logout</Link></button>
             </div>
 
-
+        <Link to="/logout">Logout</Link>
         </div>
     )
 

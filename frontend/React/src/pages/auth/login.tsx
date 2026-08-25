@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { login } from '../api/auth.ts'
+import { loginapi } from '../api/auth.ts'
 import { useNavigate } from 'react-router-dom';
 
 
-function Login (){
+function Login(){
     const [message, setMessage] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -12,7 +12,7 @@ function Login (){
 
     async function handleLogin(e: React.FormEvent){
         e.preventDefault();
-        const fetch = await login(username, password);
+        const fetch = await loginapi(username, password);
         if(fetch.success){
             redirect("/profile");
         }else{

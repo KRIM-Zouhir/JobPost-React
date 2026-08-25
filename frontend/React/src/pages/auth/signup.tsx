@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { signup } from '../api/auth.ts'
+import { signupapi } from '../api/auth.ts'
 
 function SignUp (){
     const [message, setMessage] = useState("");
@@ -10,7 +10,7 @@ function SignUp (){
 
     async function handleSignup(e: React.FormEvent){
         e.preventDefault();
-        const fetch = await signup(username, email, password);
+        const fetch = await signupapi(username, email, password);
         console.log(fetch);
         setMessage(fetch.message);
     };
