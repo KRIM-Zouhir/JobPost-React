@@ -7,6 +7,8 @@ import Login from './pages/auth/login';
 import Profile from './pages/main/profile';
 import Layout from './pages/components/layout';
 import { createBrowserRouter, RouterProvider} from "react-router-dom"; 
+import Jobs from './pages/main/jobs';
+import Logout from './pages/auth/logout';
 
 const router = createBrowserRouter([
   {
@@ -15,7 +17,9 @@ const router = createBrowserRouter([
       { path: "/", element: <HomePgae />},
       { path: "/signup", element: <SignUp />},
       { path: "/login", element: <Login />},
-      { path: "/profile", element: <Profile />}
+      { path: "/profile", element: <Profile />},
+      { path: "/jobs", element: <Jobs />},
+      { path: "/logout", element: <Logout />}
     ],
   },
 

@@ -1,7 +1,6 @@
 <?php 
     include_once 'connect.php';
-    // include_once './backend/helpers/cors.php';
-    header("Access-Control-Allow-Origin: http://localhost:5173"); // your exact frontend origin, not *
+    header("Access-Control-Allow-Origin: http://localhost:5173");
     header("Access-Control-Allow-Credentials: true");
     header("Access-Control-Allow-Headers: Content-Type");
     header("Access-Control-Allow-Methods: POST, OPTIONS");
@@ -15,6 +14,7 @@
 
     $data = json_decode(file_get_contents("php://input"), true);
     $action = $data['action'] ?? "";
+
     switch($action){
         case 'signup':
             $signup_username = $data['username'] ?? '';
@@ -118,11 +118,18 @@
 
                     }elseif($fetched_pwd != $password){
                         http_response_code(401);
-                        echo json_encode(["success" => false, "message" => "Invalid Credentiels"]);                    }
+                        echo json_encode(["success" => false, "message" => "Invalid Credentiels"]);                    
+                    }
+
                 }else{
-                    http_response_code(400);
-                    echo json_encode(["success" => false, "message" => "Username/Email Not Found"]);
+                    http_response_code(401);
+                    echo json_encode(["success" => false, "message" => "Account not verified"]);      
+                    
                 }
+                
+            }else{
+                http_response_code(400);
+                echo json_encode(["success" => false, "message" => "Username/Email Not Found"]);
             }
 
         }catch(PDOException $e){
