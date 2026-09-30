@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { profileapi } from '../api/auth.ts'
+import { profileApi, verifySession} from '../api/auth.ts'
 import { Link, useNavigate } from 'react-router-dom';
 
 function Profile(){
@@ -10,34 +10,42 @@ function Profile(){
     const redirect = useNavigate();
 
     useEffect(() => {
+        async function checkSession(){
+            const session = await verifySession();
+            if(!session.success){
+                redirect("/login")
+            }
+        }
+
+        checkSession();
         async function loadProfile() {
-            const result = await profileapi();
+            const result = await profileApi();
 
             if(result.success){
                 setUsername(result.user.username);
                 setEmail(result.user.email);
                 setRole(result.user.role);
-            }else{
-                redirect("/profile");
             }
         }
 
         loadProfile();
-    } , [redirect])
+    } , [])
 
     return(
-        <div className="min-h-screen bg-black ">
-            <div className='text-white text-center'>
-                <h3 className="">Profile</h3>
+        <div className='bg-black text-white'>
+            <div className="min-h-screen flex flex-col justify-center items-center gap-4">
+                <div className='text-center'>
+                    <h3 className="p-5">Profile</h3> 
 
-                <p className=''>{username}</p>
-                <p className=''>{email}</p>
-                <p className=''>{role}</p>
-                
-                <button className='border-white'><Link to="/logout">Logout</Link></button>
+                    <div className=''>
+                        <p className=''>{username}</p>
+                        <p className=''>{email}</p>
+                        <p className=''>{role}</p>
+                    </div>
+                    
+                    <button className='border-white'><Link to="/logout">Logout</Link></button>
+                </div>
             </div>
-
-        <Link to="/logout">Logout</Link>
         </div>
     )
 

@@ -30,7 +30,7 @@
                     [$cv_name, $cover_name] = apply_preset($preset_id , $user_id, $post_id);
 
                 }else{
-                    if((isset($_FILES['cvfile']) ) && $_FILES['cvfile']['error']== 0){
+                    if((isset($_FILES['cvfile']) ) && $_FILES['cvfile']['error'] == 0){
                         $tmp = $_FILES['cvfile']['tmp_name'];
                         $cv_name = "CV" . "_" . bin2hex(random_bytes(10)) . "_" . $post_id . ".pdf";
 

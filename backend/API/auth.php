@@ -64,18 +64,44 @@
         case 'logout':
             session_start();
             $_SESSION = [];
-            if(isset($_COOKIE[session_name()])):
+
+
+            if(!isset($_COOKIE[session_name()])):
+                http_response_code(401);
+                echo json_encode([
+                    "success" => false,
+                    "message" => "You are not logged in !",
+                ]);
+    
+            elseif(isset($_COOKIE[session_name()])):
                 setcookie(session_name(), '', time()-7000000, '/');
+                http_response_code(200);
+                echo json_encode([
+                    "success" => true,
+                    "message" => "Logged out succefully !",
+                ]);
             endif;
             session_destroy();
+            break;
 
-            http_response_code(200);
-            echo json_encode([
-                "success" => true,
-                "message" => "Logged out succefully !",
-            ]);
+        case 'verify-session': 
+            if(!isset($_COOKIE[session_name()])){
+                http_response_code(200);
+                echo json_encode([
+                    "success" => false,
+                    "message" => "No session exist !",
+                ]);
+            }else{
+                http_response_code(200);
+                echo json_encode([
+                    "success" => true,
+                    "message" => "Session found!",
+                ]);
+            }
             break;
     }
+
+
 
 
 

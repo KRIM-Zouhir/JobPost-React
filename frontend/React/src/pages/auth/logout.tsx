@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { logoutapi } from '../api/auth';
+import { logoutApi } from '../api/auth';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -9,7 +9,7 @@ function Logout(){
     const redirect = useNavigate();
     useEffect(() => {
         async function handleLogout() {
-            const response = await logoutapi() ; 
+            const response = await logoutApi() ; 
             
             if(response.success){
                 setMessage(response.message)

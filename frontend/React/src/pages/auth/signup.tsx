@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { signupapi } from '../api/auth.ts'
+import { useState, useEffect } from "react";
+import { signupApi, verifySession } from '../api/auth.ts'
+import { useNavigate } from 'react-router-dom';
 
 function SignUp (){
     const [message, setMessage] = useState("");
@@ -10,7 +11,21 @@ function SignUp (){
 
     async function handleSignup(e: React.FormEvent){
         e.preventDefault();
-        const fetch = await signupapi(username, email, password);
+        const redirect = useNavigate();
+
+        useEffect(() =>{
+            async function checkSession(){
+                const session = await verifySession();
+                if(session.success){
+                    redirect("/profile")
+                }
+            }
+
+            checkSession();
+
+        }, [redirect])
+
+        const fetch = await signupApi(username, email, password);
         console.log(fetch);
         setMessage(fetch.message);
     };

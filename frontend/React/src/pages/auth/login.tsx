@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { loginapi } from '../api/auth.ts'
+import { useEffect, useState } from "react";
+import { loginApi, verifySession } from '../api/auth.ts'
 import { useNavigate } from 'react-router-dom';
 
 
@@ -12,7 +12,7 @@ function Login(){
 
     async function handleLogin(e: React.FormEvent){
         e.preventDefault();
-        const fetch = await loginapi(username, password);
+        const fetch = await loginApi(username, password);
         if(fetch.success){
             redirect("/profile");
         }else{
@@ -20,16 +20,36 @@ function Login(){
         }
     };
 
-    return(
-            <div className="min-h-screen bg-black flex flex-col items-center justify-center">   
-                <p className="text-white">{message}</p>
-                    <form  onSubmit={handleLogin}
-                            className="flex w-full max-w-sm flex-col items-center justify-center gap-2 text-white">
-                        <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username/Email" ></input>
-                        <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" ></input>
+    useEffect(() =>{
+        async function checkSession(){
+            const session = await verifySession();
+            if(session.success){
+                redirect("/profile")
+            }
+        }
 
-                        <button type="submit">Create</button>
-                    </form>
+        checkSession();
+
+    }, [redirect])
+
+
+    return(
+            <div className="bg-black text-white">
+                <div className="min-h-screen flex flex-col items-center justify-center gap-5">   
+                    <h3 className="text-center">Log In</h3>
+                    
+                    <div>
+                        <p className="text-red-700">{message}</p>
+                        <form  onSubmit={handleLogin}
+                                className="flex w-full max-w-sm flex-col items-center justify-center gap-2 text-white">
+                            <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username/Email" ></input>
+                            <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" ></input>
+
+                            <button type="submit">Create</button>
+                        </form>
+                    </div>
+                    
+                </div>
             </div>
     )
 };

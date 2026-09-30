@@ -6,4 +6,4 @@ node_modules/
 
 **/temp/
 
-backend/uploads/
+backend/API/uploads/
