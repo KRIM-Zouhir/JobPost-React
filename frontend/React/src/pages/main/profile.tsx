@@ -18,6 +18,9 @@ function Profile(){
         }
 
         checkSession();
+    }, [redirect])
+
+    useEffect(() => {
         async function loadProfile() {
             const result = await profileApi();
 

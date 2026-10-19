@@ -16,6 +16,8 @@
     $action = $data['action'] ?? "";
 
     switch($action){
+
+
         case 'signup':
             $signup_username = $data['username'] ?? '';
             $signup_email = filter_var($data['email']  ?? '' , FILTER_VALIDATE_EMAIL) ;
@@ -84,6 +86,7 @@
             session_destroy();
             break;
 
+
         case 'verify-session': 
             if(!isset($_COOKIE[session_name()])){
                 http_response_code(200);
@@ -92,13 +95,26 @@
                     "message" => "No session exist !",
                 ]);
             }else{
+                session_start();
+                if(!isset($_SESSION['user_id']) ){
+                    http_response_code(200);
+                    echo json_encode([
+                        "success" => false,
+                        "message" => "Info arent correct !",
+                    ]);
+                    return;
+                }
+
                 http_response_code(200);
                 echo json_encode([
                     "success" => true,
                     "message" => "Session found!",
                 ]);
+
             }
             break;
+
+
     }
 
 
