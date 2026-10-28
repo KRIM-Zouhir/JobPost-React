@@ -94,10 +94,9 @@
 
     }
 
-    function newpost($db ,$admin_id ,$jobtitle ,$jobcompany ,$joblocation ,$jobtype ,$jobdescription ,$jobsalry ,$jobplace, $is_active) {
+    function newpost($db, $admin_id, $jobtitle ,$jobcompany ,$joblocation ,$jobtype ,$jobdescription ,$jobsalry ,$jobplace, $is_active) {
         try {
-                $table = "posts" ; 
-                $sql = "INSERT INTO "  . $table . "(admin_id, title, company, location,type,description, salary, is_active) VALUES (:admin_id , :title, :company , :location, :type , :description , :salary, :is_active)";
+                $sql = "INSERT INTO posts (admin_id, title, company, location,type,description, salary, is_active) VALUES (:admin_id , :title, :company , :location, :type , :description , :salary, :is_active)";
                 session_start();
 
                 $stmt = $db->prepare($sql);

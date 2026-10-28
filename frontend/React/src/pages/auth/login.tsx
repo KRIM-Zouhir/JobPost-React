@@ -44,8 +44,8 @@ function Login(){
                                 className="flex w-full max-w-sm flex-col items-center justify-center gap-2 text-white">
                             <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username/Email" ></input>
                             <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" ></input>
-
-                            <button type="submit">Create</button>
+                            <br />
+                            <button type="submit">Login</button>
                         </form>
                     </div>
                     
