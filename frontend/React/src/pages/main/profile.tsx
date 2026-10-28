@@ -38,6 +38,17 @@ function Profile(){
         <div className='bg-black text-white'>
             <div className="min-h-screen flex flex-col justify-center items-center gap-4">
                 <div className='text-center'>
+
+                    {role == "admin" && (
+                        <>
+                        <a href="/admin/applications">Applications</a>
+                        <a href="/admin/posts">Posts</a>
+                        <a href="/admin/users">Users</a>
+                        </>
+                    
+                    )
+                    }
+                    
                     <h3 className="p-5">Profile</h3> 
 
                     <div className=''>
@@ -45,7 +56,6 @@ function Profile(){
                         <p className=''>{email}</p>
                         <p className=''>{role}</p>
                     </div>
-                    
                     <button className='border-white'><Link to="/logout">Logout</Link></button>
                 </div>
             </div>

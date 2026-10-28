@@ -24,7 +24,7 @@ function Login(){
         async function checkSession(){
             const session = await verifySession();
             if(session.success){
-                // redirect("/profile")
+                redirect("/profile")
             }
         }
 

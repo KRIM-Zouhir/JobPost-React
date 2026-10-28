@@ -10,6 +10,9 @@ import { createBrowserRouter, RouterProvider} from "react-router-dom";
 import Jobs from './pages/main/jobs';
 import Logout from './pages/auth/logout';
 import Aboutus from './pages/main/aboutus';
+import Applications from './pages/admin/applications';
+import Posts from './pages/admin/posts';
+import Users from './pages/admin/users';
 
 const router = createBrowserRouter([
   {
@@ -21,7 +24,10 @@ const router = createBrowserRouter([
       { path: "/profile", element: <Profile />},
       { path: "/jobs", element: <Jobs />},
       { path: "/logout", element: <Logout />},
-      { path: "/aboutus", element: <Aboutus />}
+      { path: "/aboutus", element: <Aboutus />},
+      { path: "/admin/applications", element: <Applications />},
+      { path: "/admin/posts", element: <Posts />},
+      { path: "/admin/users", element: <Users />}
     ],
   },
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { getjobs } from '../api/applications.ts'
+import { getjobs } from '../api/jobs.ts'
 import {verifySession} from '../api/auth.ts'
-import { applyAPI, verifyApp } from '../api/jobs.ts'
+import { applyAPI, verifiedApp } from '../api/applications'
 import { useNavigate } from 'react-router-dom';
 
 type Job = {
@@ -56,7 +56,7 @@ function Jobs(){
 
     useEffect(() => {
         async function handlePostIds() {
-            const response = await verifyApp();
+            const response = await verifiedApp();
             if(response.success){
                 const ids = new Set<string>(response.posts_id.map((id: any) => String(id)));
                 setAppliedPostIds(ids);

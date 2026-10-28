@@ -56,9 +56,32 @@
             }catch(Exception $e){
                 http_response_code(400);
                 echo json_encode(["success" => false, "message" => "Missing some infos !"]);
-
             }
 
+            break;
+            
+
+        case 'getApp':
+            try{
+                
+                $start = (int)  $_POST['start'] ?? null;
+                $row_per_page = (int) $_POST['rows'] ?? null;
+               
+                getApps($db, $start, $row_per_page);
+            }catch(Exception $e){
+                http_response_code(400);
+                echo json_encode(["success" => false, "message" => "Missing some infos !"]);
+            }
+            break;
+
+
+        case 'statusApp':
+            try{
+                statusApp($db, (int) $_POST['appid'], $_POST['status']);
+            }catch(Exception $e){
+                http_response_code(400);
+                echo json_encode(["success" => false, "message" => "Missing some infos !"]);
+            }
             break;
 
     }
@@ -120,6 +143,81 @@
             http_response_code(400);
             echo json_encode(["success" => false, "message" => "Application Failed !"]);
         
+        }
+    }
+
+    function getApps($db, $start, $row_per_page){
+        try{
+            if(isset($_GET['page-nr'])){
+                $page = $_GET['page-nr'] - 1 ;
+                $start = $page * $row_per_page;
+            }
+
+            $applications = [];
+            $sql = "SELECT * FROM applications LIMIT $start, $row_per_page";
+
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $fetch = $stmt->fetchall(PDO::FETCH_ASSOC);
+
+
+            foreach($fetch as $row){
+                $application = [
+                    'appid' => $row['id'],
+                    'userid' => $row['user_id'],
+                    'postid' => $row['post_id'],
+                    'posttitle' => $row['post_title'],
+                    'cvfilename' => $row['cv_filename'],
+                    'coverfilename' => $row['cover_note'],
+                    'status' => $row['status'],
+                    'appdate' => $row['applied_at']
+
+                    ];
+                $applications[] = $application;
+                
+            }
+            
+            http_response_code(200);
+            echo json_encode([
+                "success" => true,
+                "message" => "Applications Loaded Successfully !",
+                "data" => $applications
+            ]);
+        }catch(PDOException $e){
+            echo "An error has occured $e";
+            
+            http_response_code(400);
+            echo json_encode([
+                "success" => false,
+                "message" => "Applications Loading Failed !"
+            ]);
+        }
+
+    }  
+
+
+    function statusApp($db, $appid, $status){
+        try{
+            $sql = "UPDATE applications SET status = :status WHERE id = :appid";
+
+            $stmt = $db->prepare($sql);
+            $stmt->bindValue(':status', $status);
+            $stmt->bindValue(':appid', $appid);
+            $stmt->execute();
+
+            http_response_code(200);
+            echo json_encode([
+                "success" => true,
+                "message" => "Status Changed Successfully !",
+            ]);
+        }catch(PDOException $e){
+            echo "An error has occured $e";
+            
+            http_response_code(400);
+            echo json_encode([
+                "success" => false,
+                "message" => "Status Change Failed !"
+            ]);
         }
     }
 
